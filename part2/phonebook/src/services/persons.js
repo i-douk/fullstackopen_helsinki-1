@@ -1,5 +1,5 @@
 import axios from 'axios'
-const baseUrl = 'http://localhost:3001/api/persons'
+const baseUrl = '/api/persons'
 
 const getAll = () => {
   return axios.get(baseUrl)
@@ -16,8 +16,6 @@ const updatePerson= (id, newObj) =>{
 const deletePerson = (id, setError, person)=> {
   return axios.delete(`${baseUrl}/${id}`)
   .catch(error => {
-    console.error(error)
-    console.log()
     setError(`Informations of '${person.name}' has already been removed`)
     setTimeout(() => {
       setError(null)
