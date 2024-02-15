@@ -1,0 +1,26 @@
+h2 {
+    color: green;
+    font-style : italic;
+  }
+
+
+  .notification {
+    color: rgb(37, 129, 14);
+    background: lightgrey;
+    font-size: 20px;
+    font-weight: bold;
+    border-style: solid;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+  }
+  .error {
+    color: rgb(231, 23, 23);
+    background: lightgrey;
+    font-size: 20px;
+    font-weight: bold;
+    border-style: solid;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+  }
