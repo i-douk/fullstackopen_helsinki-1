@@ -47,7 +47,7 @@ const handleChangeSearch = (e)=>{setSearchQuery(e.target.value)}
     e.preventDefault()
     const personObject = {
       name: newName,
-      number: newNum,
+      number: Number (newNum),
     }
     const foundItem = persons.find(person=> person.name.toLowerCase() === personObject.name.toLowerCase())
     const indexFound = persons.findIndex(person=> person.name.toLowerCase() === personObject.name.toLowerCase())
@@ -72,7 +72,7 @@ const handleChangeSearch = (e)=>{setSearchQuery(e.target.value)}
           })})
     }else{
       personService
-      .create(personObject)
+      .createPerson(personObject)
       .then(response => {
         setPersons(persons.concat(response.data))
         setNotification(
@@ -81,8 +81,6 @@ const handleChangeSearch = (e)=>{setSearchQuery(e.target.value)}
           setTimeout(() => {
             setNotification(null)
           }, 5000)
-       
-      
         setNewName('')
         setNewNum('')
       })
@@ -96,7 +94,7 @@ const handleChangeSearch = (e)=>{setSearchQuery(e.target.value)}
 //SEARCHING FOR NAMES AND NUMBERS IN PHONEBOOK
     const filteredPersons = useMemo(() => 
     persons.filter(person => 
-      person.name.toLowerCase().includes(searchQuery.toLowerCase()) || person.number.includes(searchQuery)
+      person.name.toLowerCase().includes(searchQuery.toLowerCase())
     ), [persons, searchQuery])
 
 // JSX

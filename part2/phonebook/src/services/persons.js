@@ -5,7 +5,7 @@ const getAll = () => {
   return axios.get(baseUrl)
 }
 
-const create = newObject => {
+const createPerson = newObject => {
   return axios.post(baseUrl, newObject)
 }
 
@@ -26,7 +26,7 @@ const deletePerson = (id, setError, person)=> {
 
 export default { 
   getAll: getAll, 
-  create: create, 
+  createPerson: createPerson, 
   deletePerson: deletePerson,
   updatePerson : updatePerson
 }
