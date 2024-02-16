@@ -1,23 +1,25 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable react/jsx-key */
 import React from 'react'
 import {useState, useMemo, useEffect} from 'react'
 import countryService from './services/countries'
-
+import WeatherComponent from './components/WeatherComponent'
 
 const App = () => {
 
-  //States
+//STATES
   const [countries, setCountries] = useState([])
   const [searchQuery, setSearchQuery] = useState("")
-  const [showInfo, setShowInfo] = useState(false)
+  const [toggle, setToggle] = useState(false)
 
-  //Handlers
+//HANDLERS
   const handleSearch = (e)=> setSearchQuery(e.target.value)
-  const handleShow= (e)=> {
+  const handleToggle= (e)=> {
     e.preventDefault()
-    setShowInfo(!showInfo)
+    setToggle(!toggle)
   }
   
-  // First render
+//FIRST RENDER
   useEffect(() => {
     countryService.getCountries()
     .then(response => {
@@ -29,43 +31,26 @@ const App = () => {
   },[])
 
 
-  
-
-      // Filtered countries
-  const filteredCountries = useMemo(() => 
+//FILTER
+  const filter = useMemo(() => 
     countries.filter(country => 
       country.name.common.toLowerCase().includes(searchQuery.toLowerCase())), [countries, searchQuery])
   
-  const countryCard = (name)=> {
-                <div>
-                    <h2>{country.name.common}</h2> <button onClick={handleShow}>show</button>
-                    <p>Capital: {country.capital}</p>
-                    <h3>Languages</h3>
-                    <ul>
-                      {
-                      Object.values(country.languages).map(language=>
-                      <li key={Math.random()}>{language}</li>)
-                      }
-                    </ul>
-                    <img src={country.flags.png} alt=""></img>
-                </div>
-  }
-  
-  return(
+
+  return(    
     <div>
         <div>
             find countries: <input value={searchQuery} onChange={handleSearch} />
         </div>
-        <div> 
+  <div> 
           Found: {
-         filteredCountries.length < 11?
+         filter.length < 11?
 
-         // one single match found, show country card
-           
-         (filteredCountries.length === 1  ?
-                (filteredCountries.map(country=>
+         // ONE MATCH 
+         (filter.length === 1  ?
+                (filter.map(country=>
                   <div>
-                    <h2>{country.name.common}</h2> <button onClick={handleShow}>show</button>
+                    <h2>{country.name.common}</h2>
                     <p>Capital: {country.capital}</p>
                     <h3>Languages</h3>
                     <ul>
@@ -75,33 +60,39 @@ const App = () => {
                       }
                     </ul>
                     <img src={country.flags.png} alt=""></img>
+                    <div>
+                      <h2>Weather in {country.name.common}</h2>
+                      < WeatherComponent key={country.cca2} country = {country} />
+                    </div>
                   </div>)) 
               :
-         // multiple matches
-              (filteredCountries.map(country=>
+         // MULTIPLE MATCHES
+              (filter.map(country=>
 
-              !showInfo?
-                 <li key={country.cca2}>{country.name.common}<button onClick={handleShow}>show</button></li>
-              :(<div>
-                    <h2>{country.name.common}</h2>
-                    <button onClick={handleShow}>show</button>
-                    <p>Capital: {country.capital}</p>
-                    <h3>Languages</h3>
-                    <ul>
-                      {
-                      Object.values(country.languages).map(language=>
-                      <li key={Math.random()}>{language}</li>)
-                      }
-                    </ul>
-                    <img src={country.flags.png} alt=""></img>
-                  </div>))
+                 <li>{country.name.common}<button onClick={handleToggle}>show</button>
+                    {toggle && 
+                    <div>
+                          <h2>{country.name.common}</h2>
+                          <button onClick={handleToggle}>hide</button>
+                          <p>Capital: {country.capital}</p>
+                          <h3>Languages</h3>
+                          <ul>
+                            {
+                            Object.values(country.languages).map(language=>
+                            <li key={Math.random()}>{language}</li>)
+                            }
+                          </ul>
+                          <img src={country.flags.png} alt=""></img>
+                    </div>
+                    }
+                  </li>)
               )
           )
           :
           ( searchQuery.length ===0 ? null :
             `Too may matches, please specify another filter`
           )
-        }</div>
+        }</div> 
   </div>
   )
 }
