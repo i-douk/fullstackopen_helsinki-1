@@ -47,7 +47,7 @@ const handleChangeSearch = (e)=>{setSearchQuery(e.target.value)}
     e.preventDefault()
     const personObject = {
       name: newName,
-      number: Number (newNum),
+      number:  newNum,
     }
     const foundItem = persons.find(person=> person.name.toLowerCase() === personObject.name.toLowerCase())
     const indexFound = persons.findIndex(person=> person.name.toLowerCase() === personObject.name.toLowerCase())
@@ -85,7 +85,12 @@ const handleChangeSearch = (e)=>{setSearchQuery(e.target.value)}
         setNewNum('')
       })
       .catch(error => {
-        console.log('fail')
+        setError(
+          `'${personObject.name}' is too short, make sure the name is at least 3 letters long`)
+          setTimeout(() => {
+            setError(null)
+            }, 5000)
+                    
       })
   }
   }
