@@ -25,7 +25,6 @@ const morgan = require('morgan')
 const app = express()
 app.use(express.static('dist'))
 const cors = require('cors')
-const person = require('./models/person')
 app.use(cors())
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body '))
 app.use(express.json())
@@ -34,32 +33,32 @@ morgan.token('body', request => JSON.stringify(request.body))
 app.get('/info', (request, response) => {
   const whataDay = new Date ()
   Person
-  .estimatedDocumentCount()
-  .then(docCount => {
-    console.log(docCount)
-    response.send(`Phonebook has info for ${docCount} people <br/> ${whataDay}`)
-})
+    .estimatedDocumentCount()
+    .then(docCount => {
+      console.log(docCount)
+      response.send(`Phonebook has info for ${docCount} people <br/> ${whataDay}`)
+    })
     .catch(err => { `Phonebook has info for so many people <br/> ${whataDay}`
     })
-  })
-  
-  app.get('/api/persons', (request, response) => {
-    Person.find({})
-     .then(persons => {
+})
+
+app.get('/api/persons', (request, response) => {
+  Person.find({})
+    .then(persons => {
       response.json(persons)
     })
 })
 
 app.get('/api/persons/:id', (request, response,next) => {
   Person.findById(request.params.id)
-  .then(person => {
-    if (person) {
-      response.json(person)
-    } else {
-      response.status(404).end()
-    }
-  })
-  .catch(error => next(error))
+    .then(person => {
+      if (person) {
+        response.json(person)
+      } else {
+        response.status(404).end()
+      }
+    })
+    .catch(error => next(error))
 })
 
 app.post('/api/persons', (request, response,next) => {
@@ -67,7 +66,7 @@ app.post('/api/persons', (request, response,next) => {
   const body = request.body
   if (!body.name || !body.number ) {
     return response.status(400).json({ error: 'name or number missing' })
-  } 
+  }
 
   const person = new Person({
     name: body.name,
@@ -77,14 +76,14 @@ app.post('/api/persons', (request, response,next) => {
   person.save().then(savedPerson => {
     response.json(savedPerson)
   })
-  .catch(error=>next(error))
+    .catch(error => next(error))
 })
 
 
 app.put('/api/persons/:id', (request, response, next) => {
-  const {name,number} = request.body
+  const { name,number } = request.body
 
-  Person.findOneAndUpdate({name : name}, {number : number},{ new: true, runValidators: true, context: 'query' })
+  Person.findOneAndUpdate({ name : name }, { number : number },{ new: true, runValidators: true, context: 'query' })
     .then(person => {
       response.json(person)
     })
@@ -105,7 +104,7 @@ const errorHandler = (error, request, response, next) => {
   if (error.name === 'CastError') {
     return response.status(400).send({ error: 'malformatted id' })
   } else if (error.name=== 'ValidationError') {
-    return response.status(400).json({error: error.message})
+    return response.status(400).json({ error: error.message })
   }
 
   next(error)
