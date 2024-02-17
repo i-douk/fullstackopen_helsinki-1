@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import countryService from '../services/countries'
 
 const WeatherComponent = ({ country }) => {
-  const [weather, setWeather] = useState(null);
+  const [theWeather, setTheWeather] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -12,7 +12,7 @@ const WeatherComponent = ({ country }) => {
     const fetchWeather = () => {
       countryService.getWeather(country.capitalInfo.latlng[0],country.capitalInfo.latlng[1])
         .then(response => {
-          setWeather(response.data);
+          setTheWeather(response.data);
           setLoading(false);
         })
         .catch(error => {
@@ -34,8 +34,10 @@ const WeatherComponent = ({ country }) => {
         <p>Error fetching weather data: {error.message}</p>
       ) : (
         <div>
-          <p>Temperature: {weather.main.temp}</p>
-          {/* Add more weather information as needed */}
+          <p>Temperature: {theWeather.main.temp} °C </p>
+          <img src={`https://openweathermap.org/img/wn/${theWeather.weather[0].icon}@2x.png`} alt=""></img>
+          <p>{theWeather.weather.main}</p>
+          <p>wind {theWeather.wind.speed} ms</p>
         </div>
       )}
     </div>
