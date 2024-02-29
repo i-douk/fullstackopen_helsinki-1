@@ -12,17 +12,23 @@ blogRouter.get('/', (request, response) => {
   
   blogRouter.post('/', (request, response) => {
     const body = request.body
+  
+    // Check if required properties are present in the request body
+    if (!body || !body.title || !body.author || !body.likes || !body.url) {
+      return response.status(400).json({ error: 'Missing required fields' });
+    }
+  
     const newBlog = new Blog({
-      title : body.title,
-      author : body.author,
-      url : body.url,
-      likes : body.likes
+      title: body.title,
+      author: body.author,
+      likes: body.likes,
+      url: body.url
     })
   
     newBlog
       .save()
-      .then(result => response.status(201).json(result.body))
-      .catch(error => logger.error(error.message))
+      .then(result => response.status(201).json(result))
+      .catch(error => logger.error(error.message));
   })
 
-  module.exports = blogRouter
+module.exports = blogRouter
