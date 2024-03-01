@@ -58,7 +58,7 @@ blogRouter.put('/:id', async (request, response) => {
 
 // HTTP DELETE request to delete blog post
 blogRouter.delete('/:id', async (request, response) => {
-  await Blog.findByIdAndDelete((request.params.id).toString())
+  await Blog.findByIdAndDelete(request.params.id)
   response.status(204).end()
 })
 

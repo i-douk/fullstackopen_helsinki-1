@@ -1,4 +1,4 @@
-const { test, after, beforeEach } = require('node:test')
+const { test, after, beforeEach, describe } = require('node:test')
 const assert = require('node:assert')
 const mongoose = require('mongoose')
 const Blog = require('../models/blog')
@@ -7,33 +7,39 @@ const app = require('../app')
 const helper = require('./test_helper')
 const api = supertest(app)
 
+describe('when there is initially some notes saved', () => {
+  beforeEach(async () => {
+    await Blog.deleteMany({})
+    await Blog.insertMany(helper.blogs)
+  })
+
 // 4.8: Blog List Tests, step 1
-test('blogs are returned as json', async () => {
-    await api
-    .get('/api/blog')
-    .expect(201)
-    .expect('Content-Type', /application\/json/)
+describe('blogs are returned as json', () => {
+    test('checks content type is returned as application/json with regex', async () => {
+        await api
+        .get('/api/blog')
+        .expect(201)
+        .expect('Content-Type', /application\/json/)
+      })
   })
 
 // 4.9: Blog List Tests, step 2
-test('the unique identifier property of the blog is named id', () =>{
-  const blog =  new Blog({
-    "title": "Is quantum computing merely a passing hype",
-    "author": "Kali",
-    "url": "http://yeahsure",
-    "likes":8
-  });
-  assert.ok(blog.id);
+describe('the unique identifier property of the blog is named id', () => {
+    test('creates new and checks that new return id as id', () =>{
+      const blog =  new Blog({
+        "title": "Is quantum computing merely a passing hype",
+        "author": "Kali",
+        "url": "http://yeahsure",
+        "likes":8
+      });
+      assert.ok(blog.id);
+    })
 })
 
-beforeEach(async () => {
-  await Blog.deleteMany({})
-  await Blog.insertMany(helper.blogs)
-})
 
 // 4.10: Blog List Tests, step 3
-
-    test('a valid blog can be added ', async () => {
+describe('a valid blog can be added', () => {
+    test('creates new obj and checks content of last added and length of db ', async () => {
       const newBlog = {
         "title": "Is quantum computing merely a passing hype",
         "author": "Kali",
@@ -51,10 +57,11 @@ beforeEach(async () => {
       const titles = blogsAtEnd.map(n =>n.title)
       assert(titles[blogsAtEnd.length-1].includes('quantum computing merely'))
     })
+  })
   
 //4.11*: Blog List Tests, step 4
-
-  test('if the likes property is not attributed, assign 0', async () => {
+describe('if the likes property is not attributed, assign 0', () => {
+  test('creates obj with missing likes and checks returned obj has 0 likes', async () => {
     const uncompleteBlog = {
       "title": "Is quantum computing merely a passing hype",
         "author": "Kali",
@@ -66,34 +73,68 @@ beforeEach(async () => {
     .expect(201)
     assert.strictEqual(returnedObj.body.likes, 0)
   })
+})
 
 // 4.12*: Blog List tests, step 5
-
-test('if url or title are missing retur 400 Bad request', async () => {
-  const blogWoTitle = {
-    "author": "Kali",
-    "url": "http://yeahsure",
-    "likes" : 10
-  }
-
-  await api
-    .post('/api/blog')
-    .send(blogWoTitle)
-    .expect(400)
-
-    
-  const blogWoUrl = {
-    "title": "Is quantum computing merely a passing hype",
-    "author": "Kali",
-    "likes" : 10
-  }
-
-  await api
-  .post('/api/blog')
-  .send(blogWoUrl)
-  .expect(400)
-
+describe('if url or title are missing retur 400 Bad request', () => {
+    test('creates two obj with missing title and url and checks reponse status', async () => {
+      const blogWoTitle = {
+        "author": "Kali",
+        "url": "http://yeahsure",
+        "likes" : 10
+      }
+      await api
+        .post('/api/blog')
+        .send(blogWoTitle)
+        .expect(400)
+      const blogWoUrl = {
+        "title": "Is quantum computing merely a passing hype",
+        "author": "Kali",
+        "likes" : 10
+      }
+      await api
+      .post('/api/blog')
+      .send(blogWoUrl)
+      .expect(400)
+    })
+  })
 })
+
+// 4.13 Blog List Expansions, step 1
+describe('a blog is deleted successfully', () => {
+  test('creates new obj and deletes it and checks status 204', async () => {
+    const blogsAtStart = await helper.blogsInDb()
+    const blogToDelete = blogsAtStart[0]
+      await api
+        .delete(`/api/blog/${blogToDelete.id}`)
+        .expect(204)
+      const blogsAtEnd = await helper.blogsInDb()
+      assert.strictEqual(blogsAtEnd.length, helper.blogs.length - 1)
+  })
+})
+
+// 4.14 Blog List Expansions, step 2
+describe('a blog is updated successfully', () => {
+  test('creates new obj and deletes it and checks status 204', async () => {
+    const blogsAtStart = await helper.blogsInDb()
+    const blogUpdate = blogsAtStart[0]
+      await api
+        .put(`/api/blog/${blogUpdate.id}`)
+        .send({
+          "title": "Is quantum computing merely a passing hype",
+          "author": "Kali",
+          "url": "http://yeahsure",
+          "likes":8
+        })
+        .expect(200)
+        const updatedBlog = await helper.blogInDb(blogUpdate.id);
+        assert.strictEqual(updatedBlog.title, "Is quantum computing merely a passing hype");
+        assert.strictEqual(updatedBlog.author, "Kali");
+        assert.strictEqual(updatedBlog.url, "http://yeahsure");
+        assert.strictEqual(updatedBlog.likes, 8);
+  })
+})
+
 
 //   test('there are six blogs', async () => {
 //     const response = await api.get('/api/blog')
