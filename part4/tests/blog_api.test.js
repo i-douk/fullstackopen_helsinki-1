@@ -135,12 +135,10 @@ describe('a blog is updated successfully', () => {
   })
 })
 
-
 //   test('there are six blogs', async () => {
 //     const response = await api.get('/api/blog')
 //     assert.strictEqual(response.body.length, blogs.length)
-//   })
-  
+//   }) 
 //   test('the first note is about React', async () => {
 //   const response = await api.get('/api/blog')
 //   const titles = response.body.map(e => e.title)
@@ -150,7 +148,6 @@ describe('a blog is updated successfully', () => {
 //   test('all blogs are returned', async () => {
 //     const response = await api.get('/api/blog')
 //     assert.strictEqual(response.body.length, helper.blogs.length)})
-  
 //   test('blog with missing params is not added', async () => {
 //     const newBlog = {
 //       "title" : "Is quantum computing merely a passing hype",
@@ -161,16 +158,11 @@ describe('a blog is updated successfully', () => {
 //     .post('/api/blog')
 //     .send(newBlog)
 //     .expect(400)
-//     const blogsAtEnd = await helper.blogsInDb()
-    
-//     assert.strictEqual(blogsAtEnd.length, helper.blogs.length)})
-  
-    
+//     const blogsAtEnd = await helper.blogsInDb() 
+//     assert.strictEqual(blogsAtEnd.length, helper.blogs.length)}) 
 //     test('a specific blog can be viewed', async () => {
 //       const blogsAtStart = await helper.blogsInDb()
-      
 //       const blogToView = blogsAtStart[0]
-      
 //       const resulBlog = await api
 //       .get(`/api/blog/${blogToView.id}`)
 //       .expect(201)

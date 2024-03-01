@@ -2,7 +2,6 @@ const logger = require('../utils/logger')
 const blogRouter = require('express').Router()
 const Blog = require('../models/blog')
 
-
 // HTTP GET request for all blogs
 blogRouter.get('/', async (request, response) =>  {
 logger.info(`Getting blogs via HTTP GET request`)

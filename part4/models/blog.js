@@ -12,7 +12,6 @@ const blogSchema = new mongoose.Schema({
     likes: Number
   })
 
-
   mongoose.connect(mongoUrl)
       .then(result => {
           console.log('connected to MongoDB')
