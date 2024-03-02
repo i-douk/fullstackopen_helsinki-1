@@ -132,8 +132,12 @@ describe('a blog is updated successfully', () => {
         assert.strictEqual(updatedBlog.author, "Kali");
         assert.strictEqual(updatedBlog.url, "http://yeahsure");
         assert.strictEqual(updatedBlog.likes, 8);
-  })
-})
+      })
+    })
+    
+    after(async () => {
+        await mongoose.connection.close()
+    })
 
 //   test('there are six blogs', async () => {
 //     const response = await api.get('/api/blog')
@@ -169,7 +173,3 @@ describe('a blog is updated successfully', () => {
 //       .expect('Content-Type', /application\/json/)
 //       assert.deepStrictEqual(resulBlog.body, blogToView)
 //     })
-    
-    after(async () => {
-        await mongoose.connection.close()
-    })
