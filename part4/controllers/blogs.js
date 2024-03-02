@@ -25,7 +25,7 @@ blogRouter.post('/', async (request, response) => {
 
   const body = request.body
 
-  const user = await User.findById(body.user)
+  const locatedUser = await User.findById(body.user)
 
   // Check if required properties are present in the request body
   if (!body || !body.title || !body.author || !body.url || !body.user)
@@ -33,26 +33,26 @@ blogRouter.post('/', async (request, response) => {
     return response.status(400).json({ error: 'Missing required fields' });
   }
 
-let newBlog = []
+let newBlog 
   if(!body.likes){
    newBlog = new Blog({
     title: body.title,
     author: body.author,
     likes: 0,
     url: body.url,
-    userId: user.id
+    user: body.user
   })} else {
-   newBlog = new Blog({
-  title: body.title,
-  author: body.author,
-  likes: body.likes,
-  url: body.url,
-  userId: user.id
+    newBlog = new Blog({
+    title: body.title,
+    author: body.author,
+    likes: body.likes,
+    url: body.url,
+    user: body.user
 })}
 
 let savedBlog = await newBlog.save()
-user.blogs = user.blogs.concat(savedBlog.id)
-await user.save()
+locatedUser.blogs = locatedUser.blogs.concat(savedBlog.id)
+await locatedUser.save()
 
 response.status(201).json(savedBlog)
 })
