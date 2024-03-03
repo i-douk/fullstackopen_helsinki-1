@@ -57,7 +57,8 @@ const nonExistingId = async () => {
     "title" : "Is quantum computing merely a passing hype",
     "author" : "Kali",
     "likes" :8,
-    "url" : "http://yeahsure.com"
+    "url" : "http://yeahsure.com",
+
 })
   await blog.save()
   await blog.deleteOne()
