@@ -44,7 +44,8 @@ describe('a valid blog can be added', () => {
         "title": "Is quantum computing merely a passing hype",
         "author": "Kali",
         "url": "http://yeahsure",
-        "likes":8
+        "likes":8,
+        "user": "660251eb24c24e576b6c764b"
       }
       await api
       .post('/api/blog')

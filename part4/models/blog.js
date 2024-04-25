@@ -5,7 +5,6 @@ const mongoose = require('mongoose')
 mongoose.set('strictQuery', false)
 
 const mongoUrl = String(config.MONGODB_URI)
-
 const blogSchema = new mongoose.Schema({
     title: String,
     author: String,
@@ -14,13 +13,19 @@ const blogSchema = new mongoose.Schema({
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'User'
-    }
+    },
+    comments: [
+      {
+        type: String,
+      }
+    ],
   })
 
   mongoose.connect(mongoUrl)
       .then(result => {
           console.log('connected to MongoDB')
-      })  .catch(error => {
+      })
+      .catch(error => {
           logger.error('error connecting to MongoDB:', error.message)
       })
 
