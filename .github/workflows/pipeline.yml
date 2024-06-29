@@ -25,6 +25,7 @@ jobs:
           working-directory: part2/phonebook
         - name: Build UI
           run: npm run build:ui
+          working-directory: part2/phonebook
 
         - name: Test Success
           uses: rjstone/discord-webhook-notify@v1
