@@ -15,7 +15,6 @@ const Blog = require('../models/blog')
 blogRouter.get('/', async (request, response) =>{
 
 const blogs = await Blog.find({}).populate('user', { username: 1, name: 1 })
-
 response.status(201).json(blogs)
 })
 
@@ -24,7 +23,6 @@ blogRouter.get('/:id', async (request, response) =>  {
 
 logger.info(`Getting specific blog via HTTP GET request`)
 const blog = await Blog.findById(request.params.id)
-
 response.status(201).json(blog)
 })
 
@@ -37,7 +35,6 @@ blogRouter.post('/', async (request, response) => {
   if (!decodedToken.id) {
     return response.status(401).json({ error: 'token invalid' })  }
   const locatedUser = await User.findById(decodedToken.id)
-
 
   // Check if required properties are present in the request body
   if (!body || !body.title || !body.author || !body.url || !body.user)
@@ -65,7 +62,6 @@ let newBlog
 let savedBlog = await newBlog.save()
 locatedUser.blogs = locatedUser.blogs.concat(savedBlog.id)
 await locatedUser.save()
-
 response.status(201).json(savedBlog)
 })
  
@@ -79,10 +75,18 @@ blogRouter.put('/:id', async (request, response) => {
     likes: body.likes,
     url: body.url
   }
-
   const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, { new: true })
-
   response.json(updatedBlog)
+})
+
+// HTTP POST request to add comment to blog in mongodb
+blogRouter.post('/:id/comments', async (request, response) => {
+
+  const blogToComment = await Blog.findById(request.params.id) 
+  const comment = request.body.data
+  blogToComment.comments = blogToComment.comments.concat(comment)
+  await blogToComment.save()
+  response.status(201).json(blogToComment)
 })
 
 // HTTP DELETE request to delete blog post
