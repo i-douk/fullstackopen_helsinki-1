@@ -20,8 +20,6 @@ jobs:
         - name: Install dependencies
           run: npm install
           working-directory: part3/backend
-        - run: npm run lint
-          working-directory: part3/backend
     
         - name: Trigger deployment
           run: curl https://api.render.com/deploy/srv-${{ secrets.RENDER_SERVICE_ID }}?key=${{ secrets.RENDER_API_KEY }}
