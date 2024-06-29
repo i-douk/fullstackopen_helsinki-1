@@ -26,6 +26,8 @@ jobs:
         - name: Build UI
           run: npm run build:ui
           working-directory: part2/phonebook
+        - name: Trigger deployment
+          run: curl https://api.render.com/deploy/srv-${{ secrets.RENDER_SERVICE_ID }}?key=${{ secrets.RENDER_API_KEY }}
 
         - name: Test Success
           uses: rjstone/discord-webhook-notify@v1
@@ -35,14 +37,14 @@ jobs:
             color: '#008000'
             text: Success.
             webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
-        - name: Test Failure
-          uses: rjstone/discord-webhook-notify@v1
-          if: ${{ failure() }}
-          with:
-              severity: info
-              color: '#FF0000'
-              text: Success.
-              webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+        # - name: Test Failure
+        #   uses: rjstone/discord-webhook-notify@v1
+        #   if: ${{ failure() }}
+        #   with:
+        #       severity: info
+        #       color: '#FF0000'
+        #       text: Success.
+        #       webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
 
        
   tag_release:
