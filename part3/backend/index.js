@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 // const mongoose = require('mongoose')
 // const password = process.argv[2]
 // const url = `mongodb+srv://ihssan:${password}@cluster-fso.e5hniy1.mongodb.net/?retryWrites=true&w=majority`
