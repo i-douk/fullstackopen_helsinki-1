@@ -29,6 +29,9 @@ jobs:
         - name: Push Dist
           run: run git add . && git commit -m "ci push dist" && git push
           working-directory: part3/backend
+        - name: Start project
+          run: npm start
+          working-directory: part3/backend
         - name: Trigger deployment
           run: curl https://api.render.com/deploy/srv-${{ secrets.RENDER_SERVICE_ID }}?key=${{ secrets.RENDER_API_KEY }}
         
