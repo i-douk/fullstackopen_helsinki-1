@@ -29,9 +29,21 @@ jobs:
         - name: Build UI
           run: npm run build:ui
           working-directory: part2/phonebook
-        - name: Start application
-          run: npm start
-          working-directory: part3/backend
+        - name: Install PlayWright dependencies
+          run: npm install
+          working-directory: part3/backend/e2e-tests
+        - name: Install Playwright Browsers
+          run: npx playwright install --with-deps
+          working-directory: part3/backend/e2e-tests
+        - name: Run Playwright tests
+          run: npm run test
+          working-directory: part3/backend/e2e-tests
+        - uses: actions/upload-artifact@v4
+          if: ${{ !cancelled() }}
+          with:
+            name: playwright-report
+            path: playwright-report/
+            retention-days: 30
         - name: Trigger deployment
           run: curl https://api.render.com/deploy/srv-${{ secrets.RENDER_SERVICE_ID }}?key=${{ secrets.RENDER_API_KEY }}
         
