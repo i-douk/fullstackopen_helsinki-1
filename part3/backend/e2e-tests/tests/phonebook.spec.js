@@ -1,3 +1,4 @@
+const { test, expect } = require('@playwright/test');
 const { chromium } = require('@playwright/test');
 
 test('front page can be opened', async () => {
