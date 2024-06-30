@@ -10,61 +10,63 @@ on:
 
 jobs:
   deployment_pipeline:
-        if: ${{ contains(toJson(github.event.commits.*.message), 'skip') == false && github.ref == 'refs/heads/main' }}
-        runs-on: ubuntu-20.04
-        steps:
-        - uses: actions/checkout@v4
-        - uses: actions/setup-node@v4
-          with:
-            node-version: '20'
-        - name: Install dependencies backend
-          run: npm install
-          working-directory: part3/backend
-        - name: Install dependencies frontend
-          run: npm install
-          working-directory: part2/phonebook
-        - name: Set environment variables
-          run: |
-            echo "MONGODB_URI=${{ secrets.MONGODB_URI }}" >> $GITHUB_ENV
-        - name: Build UI
-          run: npm run build:ui
-          working-directory: part2/phonebook
-        - name: Install PlayWright dependencies
-          run: npm install
-          working-directory: part3/backend/e2e-tests
-        - name: Install Playwright Browsers
-          run: npx playwright install --with-deps
-          working-directory: part3/backend/e2e-tests
-        - name: Run Playwright tests
-          run: npm test -- --project chromium
-          working-directory: part3/backend/e2e-tests
-        - uses: actions/upload-artifact@v4
-          if: ${{ !cancelled() }}
-          with:
-            name: playwright-report
-            path: playwright-report/
-            retention-days: 30
-        - name: Trigger deployment
-          run: curl https://api.render.com/deploy/srv-${{ secrets.RENDER_SERVICE_ID }}?key=${{ secrets.RENDER_API_KEY }}
-        
-        # - name: Test Success
-        #   uses: rjstone/discord-webhook-notify@v1
-        #   if: ${{ success() }}
-        #   with:
-        #     severity: info
-        #     color: '#008000'
-        #     text: Success.
-        #     webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
-        # - name: Test Failure
-        #   uses: rjstone/discord-webhook-notify@v1
-        #   if: ${{ failure() }}
-        #   with:
-        #       severity: info
-        #       color: '#FF0000'
-        #       text: Failure
-        #       webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+    if: ${{ contains(toJson(github.event.commits.*.message), 'skip') == false && github.ref == 'refs/heads/main' }}
+    runs-on: ubuntu-20.04
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+    - name: Install dependencies backend
+      run: npm install
+      working-directory: part3/backend
+    - name: Install dependencies frontend
+      run: npm install
+      working-directory: part2/phonebook
+    - name: Set environment variables
+      run: |
+        echo "MONGODB_URI=${{ secrets.MONGODB_URI }}" >> $GITHUB_ENV
+    - name: Build UI
+      run: npm run build:ui
+      working-directory: part2/phonebook
+    - name: Install PlayWright dependencies
+      run: npm install
+      working-directory: part3/backend/e2e-tests
+    - name: Install Playwright Browsers
+      run: npx playwright install --with-deps
+      working-directory: part3/backend/e2e-tests
+    - name: Start server and run Playwright tests
+      run: |
+        npm start &
+        npx wait-on http://localhost:3001
+        npm test -- --project chromium
+      working-directory: part3/backend/e2e-tests
+    - uses: actions/upload-artifact@v4
+      if: ${{ !cancelled() }}
+      with:
+        name: playwright-report
+        path: playwright-report/
+        retention-days: 30
+    - name: Trigger deployment
+      run: curl https://api.render.com/deploy/srv-${{ secrets.RENDER_SERVICE_ID }}?key=${{ secrets.RENDER_API_KEY }}
+    
+    # - name: Test Success
+    #   uses: rjstone/discord-webhook-notify@v1
+    #   if: ${{ success() }}
+    #   with:
+    #     severity: info
+    #     color: '#008000'
+    #     text: Success.
+    #     webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+    # - name: Test Failure
+    #   uses: rjstone/discord-webhook-notify@v1
+    #   if: ${{ failure() }}
+    #   with:
+    #       severity: info
+    #       color: '#FF0000'
+    #       text: Failure
+    #       webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
 
-       
   tag_release:
     env: 
       COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
@@ -98,4 +100,3 @@ jobs:
       env:
         COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
       run: echo "$COMMIT_MESSAGES"
-    

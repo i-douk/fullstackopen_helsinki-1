@@ -21,10 +21,10 @@
     "morgan": "^1.10.0"
   },
   "devDependencies": {
-
     "@stylistic/eslint-plugin-js": "^1.8.1",
     "eslint": "^9.6.0",
     "globals": "^15.6.0",
-    "nodemon": "^3.0.3"
+    "nodemon": "^3.0.3",
+    "wait-on": "^7.2.0"
   }
 }
