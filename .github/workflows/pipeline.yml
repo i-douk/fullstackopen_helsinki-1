@@ -23,10 +23,13 @@ jobs:
         - name: Install dependencies frontend
           run: npm install
           working-directory: part2/phonebook
+        - name: Set environment variables
+          run: |
+            echo "MONGODB_URI=${{ secrets.MONGODB_URI }}" >> $GITHUB_ENV
         - name: Build UI
           run: npm run build:ui
           working-directory: part2/phonebook
-        - name: Start project
+        - name: Start application
           run: npm start
           working-directory: part3/backend
         - name: Trigger deployment
