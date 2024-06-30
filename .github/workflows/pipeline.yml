@@ -26,9 +26,12 @@ jobs:
         - name: Build UI
           run: npm run build:ui
           working-directory: part2/phonebook
+        - name: Push Dist
+          run: run git add . && git commit -m "ci push dist" && git push
+          working-directory: part3/backend
         - name: Trigger deployment
           run: curl https://api.render.com/deploy/srv-${{ secrets.RENDER_SERVICE_ID }}?key=${{ secrets.RENDER_API_KEY }}
-
+        
         # - name: Test Success
         #   uses: rjstone/discord-webhook-notify@v1
         #   if: ${{ success() }}
